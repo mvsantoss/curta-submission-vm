@@ -8,6 +8,21 @@ git clone --recursive git@github.com:mvsantoss/curta-submission-vm.git
 
 vagrant up
 
+## Configure App
+
+Create file submission/.env with contents:
+
+```
+DEBUG=True
+STATIC_URL=/static/
+DATABASE_URL='mysql://root:@localhost/cc-submission'
+DEFAULT_FROM_EMAIL=
+EMAIL_HOST=
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+EMAIL_PORT=
+```
+
 ## Migrate
 
 vagrant ssh
