@@ -1,0 +1,56 @@
+---
+- hosts: all
+  gather_facts: yes
+
+  vars:
+    mysql_root_password: root
+    mysql_databases:
+      - name: submission
+
+  pre_tasks:
+    - name: Atualizar o cache do apt
+      apt: update_cache=yes cache_valid_time=43200
+      become: yes
+
+    - name: Locale pt_BR
+      locale_gen: name=pt_BR.UTF-8 state=present
+      become: yes
+
+    - name: Atualizar para pt_BR
+      command: /usr/sbin/update-locale LANG=pt_BR.UTF-8 LC_ALL=pt_BR.UTF-8
+      become: yes
+
+    - name: Definir horário para America/Sao_Paulo
+      file: src=/usr/share/zoneinfo/America/Sao_Paulo dest=/etc/localtime
+      become: yes
+
+    - name: Atualizar Timezone para America/Sao_Paulo
+      command: echo America/Sao_Paulo > /etc/timezone
+      notify: update tzdata
+      become: yes
+
+  tasks:
+    - name: Install packages
+      apt: name={{item}} state=present
+      with_items:
+        - gcc
+        - libmysqlclient-dev
+        - python3.4-dev
+        - python-virtualenv
+        - libxml2-dev
+        - libxslt1-dev
+        - python-dev
+      become: yes
+
+    - name: Env folder
+      file: path=/vagrant/submission/env  state=directory
+
+    - name: Virtualenv
+      command: virtualenv env --prompt="[submission] " -p python3.4 chdir=/vagrant/submission  creates=/vagrant/submission/env/bin
+
+    - name: Pip install
+      shell: source env/bin/activate && pip install -r requirements.txt chdir=/vagrant/submission executable=/bin/bash
+
+  roles:
+    - role: geerlingguy.mysql
+      become: yes

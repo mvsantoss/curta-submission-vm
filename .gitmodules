@@ -1,0 +1,4 @@
+[submodule "submission"]
+	path = submission
+	url = https://xp-dev.com/git/submission
+	branch = development
