@@ -1,0 +1,6 @@
+#!/bin/bash
+
+SUBMISSION_DIR=/vagrant/submission
+source $SUBMISSION_DIR/env/bin/activate
+python $SUBMISSION_DIR/manage.py runserver 192.168.55.10:8000
+deactivate
